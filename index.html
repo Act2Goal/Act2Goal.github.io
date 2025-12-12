@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Act2Goal | AgiBot Research</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        textMain: '#1a1a1a',
+                        textMuted: '#4b5563', // Gray-600
+                        brand: '#2563eb',
+                        bgLight: '#f9fafb', // Gray-50
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Merriweather', 'Georgia', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Updated Fonts: Added weight 800 and 900 for extra boldness -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            background-color: #ffffff; 
+            color: #1a1a1a; 
+            font-family: 'Merriweather', serif; 
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        h1, h2, h3, h4, h5, h6, button, .sans-font, nav {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* 2. ENHANCED BOLD TEXT: Global override to make bold text much stronger */
+        strong, b, .font-bold {
+            font-weight: 800; /* Adjusted: Reduced from 800 (ExtraBold) to 700 (Bold) */
+            color: #464444;   /* Adjusted: Changed from #000000 (Pure Black) to #1a1a1a (Soft Black/TextMain) */
+        }
+
+        /* Text Shadow for Video Overlays */
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        .donut-chart {
+            width: 140px; height: 140px; border-radius: 50%;
+            background: conic-gradient(
+                #22c55e 0% 35%,   /* Home (Green) */
+                #f97316 35% 55%,  /* Restaurant (Orange) */
+                #3b82f6 55% 75%,  /* Supermarket (Blue) */
+                #6b7280 75% 90%,  /* Industrial (Gray) */
+                #eab308 90% 100%  /* Office (Yellow) */
+            );
+            position: relative;
+        }
+        .donut-hole {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #ffffff; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        
+        .academic-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+        .academic-table th { 
+            border-bottom: 2px solid #1a1a1a; 
+            padding: 12px 8px; 
+            font-weight: 800; /* Bolder headers */
+            text-align: center; 
+            color: #000;
+            background-color: #f9fafb;
+            white-space: nowrap;
+        }
+        .academic-table td { 
+            border-bottom: 1px solid #e5e7eb; 
+            padding: 10px 8px; 
+            text-align: center; 
+            color: #4b5563; 
+        }
+        /* .academic-table tr:last-child td { border-bottom: 2px solid #1a1a1a; } */
+        .academic-table .row-title { text-align: left; font-weight: 600; color: #1a1a1a; padding-left: 12px; }
+        /* .academic-table .highlight-row { background-color: #eff6ff; }
+        .academic-table .highlight-cell { color: #2563eb; font-weight: 800; } */
+        
+        .section-divider { border-bottom: 1px solid #e5e7eb; margin: 4rem 0; }
+        .video-card-title {
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+        
+        /* Bar Chart Styles */
+        .bar-container { display: flex; align-items: flex-end; height: 180px; gap: 16px; }
+        .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; }
+        .bar { width: 100%; border-radius: 4px 4px 0 0; position: relative; transition: height 0.5s ease; min-width: 24px; }
+        .bar:hover { opacity: 0.9; }
+        .bar-label { font-size: 11px; text-align: center; margin-top: 10px; color: #666; font-family: 'Inter', sans-serif; font-weight: 500; line-height: 1.2; }
+        .bar-value { position: absolute; top: -24px; width: 100%; text-align: center; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #000; }
+        
+        /* Step Badge */
+        .step-badge {
+            width: 36px; height: 36px; 
+            border-radius: 50%; 
+            background-color: #eff6ff; 
+            color: #2563eb; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+            border: 1px solid #dbeafe;
+        }
+
+        /* X Mark for Table */
+        .x-mark { color: #ef4444; font-weight: 800; }
+        .check-mark { color: #22c55e; font-weight: 800; }
+        
+        /* Custom Range Input Style */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 0;
+            height: 0;
+        }
+
+        /* Nav Link Hover Effect */
+        .nav-link {
+            position: relative;
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem; /* Slightly larger for readability */
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: #1a1a1a;
+        }
+        
+        /* AgiBot Logo Fallback Style */
+        .logo-fallback {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -1px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // --- Icons Wrapper ---
+        const IconWrapper = ({ name, size = 24, className }) => {
+            const ref = useRef(null);
+            useEffect(() => {
+                if (!ref.current || !window.lucide) return;
+                ref.current.innerHTML = '';
+                const i = document.createElement('i');
+                i.setAttribute('data-lucide', name);
+                i.setAttribute('width', size);
+                i.setAttribute('height', size);
+                if (className) i.setAttribute('class', className);
+                ref.current.appendChild(i);
+                window.lucide.createIcons({
+                    root: ref.current,
+                    nameAttr: 'data-lucide',
+                    attrs: { width: size, height: size, class: className }
+                });
+            }, [name, size, className]);
+            return <span ref={ref} className={`inline-flex items-center justify-center ${className || ''}`} style={{ width: size, height: size }}></span>;
+        };
+
+        const FileText = (props) => <IconWrapper name="file-text" {...props} />;
+        const Github = (props) => <IconWrapper name="github" {...props} />;
+        const Database = (props) => <IconWrapper name="database" {...props} />;
+        const Target = (props) => <IconWrapper name="target" {...props} />;
+        const Volume2 = (props) => <IconWrapper name="volume-2" {...props} />;
+        const VolumeX = (props) => <IconWrapper name="volume-x" {...props} />;
+        const Info = (props) => <IconWrapper name="info" {...props} />;
+        const Bot = (props) => <IconWrapper name="bot" {...props} />;
+
+        // --- Data Constants ---
+        const COLORS = {
+            perception: '#fbbf24', planning: '#22c55e', mistake: '#60a5fa', collab: '#8b5cf6',
+            home: '#22c55e', restaurant: '#f97316', industrial: '#6b7280', supermarket: '#3b82f6', office: '#eab308',
+            static: '#86efac', seq: '#f97316', interleaved: '#eab308'
+        };
+
+        const SUBTASK_DATA = [
+            { name: "Scene Understanding", val: 967, cat: "perception" },
+            { name: "Success Detection", val: 800, cat: "planning" },
+            { name: "Action Understanding", val: 600, cat: "planning" },
+            { name: "Subtask Planning", val: 600, cat: "planning" },
+            { name: "Trajectory Understanding", val: 505, cat: "planning" },
+            { name: "Task Grounding", val: 486, cat: "perception" },
+            { name: "Dualview Matching", val: 445, cat: "perception" },
+            { name: "Mistake Existence", val: 334, cat: "mistake" },
+            { name: "Task Progress", val: 281, cat: "planning" },
+            { name: "Relative Pos. Grounding", val: 249, cat: "perception" },
+            { name: "Human-Robot Interaction", val: 227, cat: "collab" },
+            { name: "Human Intention", val: 225, cat: "collab" },
+            { name: "Mistake Classify", val: 116, cat: "mistake" },
+            { name: "Reasoning", val: 112, cat: "planning" },
+            { name: "Mistake Recovery", val: 105, cat: "mistake" },
+        ];
+        
+        const MAX_SUBTASK_VAL = 967;
+
+        const DEMO_CATEGORIES = [ 
+            { id: 'generalization', label: 'Generalization' }, 
+            { id: 'improvement', label: 'Self-improvement' }, 
+        ];
+        
+        const DEMO_ITEMS = {
+
+            generalization: [ 
+                { title: "Write_ID", desc: "The robot writes the English word shown in the goal image on a whiteboard using a marker pen.", src: "./web_videos/WRITE_ID.mp4", src_fpv: "./web_videos/WRITE_ID.mp4" }, 
+                { title: "Dessert_ID", desc: "The robot performs dessert plating with reference to a given goal image.", src: "./web_videos/DESSERT_ID.mp4", src_fpv: "./web_videos/DESSERT_ID.mp4" }, 
+                { title: "Plug_In_ID", desc: "Following the goal image's guidance, the robot picks up bearing workpieces and inserts them into small holes one by one.", src: "./web_videos/Plug_ID.mp4", src_fpv: "./web_videos/Plug_ID.mp4" }, 
+                { title: "Write_OOD", desc: "The robot writes words unseen during training on a whiteboard using a marker pen.", src: "./web_videos/WRITE_OOD.mp4", src_fpv: "./web_videos/WRITE_OOD.mp4" }, 
+                { title: "Dessert_OOD", desc: "The robot performs dessert plating with reference to a given goal image, using a plate and dessert types unseen in the training data.", src: "./web_videos/DESSERT_OOD.mp4", src_fpv: "./web_videos/DESSERT_OOD.mp4" }, 
+                { title: "Plug_In_OOD", desc: "The robot completes a plug-in task unseen in training: inserting a cylindrical drink bottle into a cup holder.", src: "./web_videos/Plug_OOD.mp4", src_fpv: "./web_videos/Plug_OOD.mp4" }, ]
+            ,
+            improvement : [ 
+                { title: "Drawing Unseen Pattern 1", desc: "The robot learns to draw a cross (unseen pattern in training) through 20-min of online training.", src: "./web_videos/OA-drawing unseen.mp4" }, 
+                { title: "Drawing Unseen Pattern 2", desc: "The robot learns to draw a paper clip  (unseen pattern in training) through 27-min of online training.", src: "./web_videos/OA-drawing unseen2.mp4" }, 
+                { title: "Plug bottle into cup holder", desc: "The robot learns to accurately place beverages into cup holders through 17-min of online training.", src: "./web_videos/OA-plug bottle cup holder.mp4" }, 
+
+            ],
+
+        };
+
+        // --- UI Components ---
+
+        const Navigation = () => {
+            const [logoError, setLogoError] = useState(false);
+
+            return (
+                <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+                    <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+                        <div className="flex items-center gap-6 h-full">
+                            <a href="https://www.agibot.com" target="_blank" className="group h-full flex items-center opacity-90 hover:opacity-100 transition-opacity py-1">
+                                {!logoError ? (
+                                    <img 
+                                        src="./figures/agibot_logo.png" 
+                                        alt="AgiBot" 
+                                        className="h-9 w-auto object-contain" 
+                                        onError={() => setLogoError(true)} 
+                                    />
+                                ) : (
+                                    <div className="flex items-center gap-1.5 text-textMain h-full">
+                                        <Bot size={28} className="text-black" />
+                                        <span className="logo-fallback text-xl">AgiBot</span>
+                                    </div>
+                                )}
+                            </a>
+                            
+                            <div className="h-8 w-px bg-gray-300"></div>
+
+                            <a href="#" className="font-bold text-xl tracking-tight text-textMain hover:text-brand transition-colors">
+                                Act2Goal
+                            </a>
+                        </div>
+
+                        <div className="flex items-center gap-1 md:gap-8">
+                            <div className="hidden md:flex items-center gap-8">
+                                <a href="#Generalization" className="nav-link">Generalization</a>
+                                <a href="#Self-improvement" className="nav-link">Self-improvement</a>
+                                <a href="#Ablation study" className="nav-link">Ablation study </a>
+                            </div>
+                            
+                            <a 
+                                href="https://www.agibot.com" 
+                                target="_blank" 
+                                className="nav-link font-bold text-textMain hover:text-brand transition-colors ml-2"
+                            >
+                                About Us
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+
+
+   
+
+        // 4. UPDATED: VideoPlayer with Adaptive Size (No Black Bars)
+        const VideoPlayer = ({ src, label, children, className }) => {
+            const videoRef = useRef(null);
+            const containerRef = useRef(null); 
+            
+            // PERFORMANCE: Intersection Observer to play/pause videos automatically
+            useEffect(() => {
+                const video = videoRef.current;
+                const container = containerRef.current;
+                
+                if (!video || !container) return;
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        // If video is visible (intersecting)
+                        if (entry.isIntersecting) {
+                            // Try to auto-play (muted)
+                            const playPromise = video.play();
+                            if (playPromise !== undefined) {
+                                playPromise.catch(error => {
+                                    // Auto-play prevented
+                                });
+                            }
+                        } else {
+                            // Pause if out of view to save resources
+                            video.pause();
+                        }
+                    });
+                }, {
+                    threshold: 0.5 // Play when 50% visible
+                });
+
+                observer.observe(container);
+
+                return () => {
+                    if (container) observer.unobserve(container);
+                };
+            }, []);
+
+            return (
+                <div 
+                    ref={containerRef} // Observe this container
+                    className={`relative w-full h-full group bg-black overflow-hidden ${className}`} 
+                >
+                    <video 
+                        ref={videoRef}
+                        className="w-full h-full object-cover bg-gray-900" 
+                        muted
+                        loop 
+                        playsInline
+                        controls  // Native Controls
+                        preload="metadata"
+                        src={src}
+                    />
+                    
+                    {/* Optional Label in Top-Left (Non-intrusive) */}
+                    {label && (
+                        <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 text-white text-[10px] font-bold uppercase rounded backdrop-blur-sm border border-white/10 pointer-events-none z-10 text-shadow">
+                            {label}
+                        </div>
+                    )}
+
+                    {/* Description Overlay - retained but ensure it doesn't block controls */}
+                    <div className="pointer-events-none z-10">
+                        {children}
+                    </div>
+                </div>
+            );
+        };
+
+        const Button = ({ icon, label, href="#", colorName }) => {
+            const colorMap = {
+                red: 'text-red-600 border-red-200 hover:bg-red-600 hover:border-red-600',
+                blue: 'text-blue-600 border-blue-200 hover:bg-blue-600 hover:border-blue-600',
+                gray: 'text-gray-700 border-gray-200 hover:bg-gray-800 hover:border-gray-800',
+                yellow: 'text-yellow-600 border-yellow-200 hover:bg-yellow-500 hover:border-yellow-500',
+                green: 'text-green-600 border-green-200 hover:bg-green-600 hover:border-green-600',
+            };
+
+            const activeColorClass = colorMap[colorName] || colorMap.gray;
+
+            return (
+                <a 
+                    href={href} 
+                    className={`group flex items-center justify-center gap-2 px-6 py-2 rounded-full border bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:text-white ${activeColorClass}`}
+                >
+                    <span className="group-hover:text-white transition-colors duration-300">
+                        {icon}
+                    </span>
+                    <span className="text-sm font-bold group-hover:text-white transition-colors duration-300">
+                        {label}
+                    </span>
+                </a>
+            );
+        };
+
+        const SectionHeader = ({ title, subtitle }) => (
+            <div className="mb-12 text-center">
+                <h2 className="sans-font text-3xl font-bold text-textMain mb-4 tracking-tight">
+                    {title}
+                </h2>
+                {subtitle && <p className="text-textMuted text-lg max-w-4xl mx-auto leading-relaxed font-light">{subtitle}</p>}
+            </div>
+        );
+
+        const SmartImage = ({ src, alt, caption, className, fallbackText }) => {
+            const [isError, setIsError] = useState(false);
+            
+            if (isError || !src) {
+                return (
+                    <div className={`bg-gray-50 border border-gray-200 flex flex-col items-center justify-center text-gray-400 text-sm p-4 ${className}`} style={{minHeight: '200px'}}>
+                        <div className="mb-2 opacity-50 text-xs">[Image]</div>
+                        {fallbackText || alt}
+                    </div>
+                );
+            }
+            
+            return (
+                <figure className="inline-block">
+                    <img 
+                        src={src} 
+                        alt={alt} 
+                        className={className} 
+                        onError={() => setIsError(true)} 
+                    />
+                    {caption && (
+                        <figcaption className="text-sm text-gray-600 mt-2 text-center">
+                            {caption}
+                        </figcaption>
+                    )}
+                </figure>
+            );
+        };
+
+        // --- Main App ---
+
+        function App() {
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            });
+
+            // Removed Global Audio State since we use native controls now
+            // const [activeVideoId, setActiveVideoId] = useState(null);
+            
+            // 1. SCROLL REFS: Store refs to scroll containers
+            const scrollRefs = useRef({});
+
+            // 1. SCROLL EFFECT: Center 'generalization' on mount
+            useEffect(() => {
+                const genContainer = scrollRefs.current['generalization'];
+                if (genContainer) {
+                    // Calculate center position: (Total Width - Viewport Width) / 2
+                    // This centers the middle of the scrollable content in the viewport
+                    const centerPos = (genContainer.scrollWidth - genContainer.clientWidth) / 2;
+                    
+                    // Smooth scroll to center
+                    genContainer.scrollTo({
+                        left: centerPos,
+                        behavior: 'smooth' 
+                    });
+                }
+            }, []);
+
+            // const handleToggleAudio = (id) => {
+            //     setActiveVideoId(prevId => prevId === id ? null : id);
+            // };
+
+            const totalSubtaskSamples = SUBTASK_DATA.reduce((acc, curr) => acc + curr.val, 0);
+
+
+            return (
+                <div className="bg-white min-h-screen">
+                    {/* 3. Added Navigation Bar */}
+                    <Navigation />
+                    
+                    <header className="pt-10 pb-16 px-6 max-w-5xl mx-auto text-center border-b border-gray-100">
+                        <h1 className="sans-font text-4xl md:text-6xl font-bold text-textMain mb-6 tracking-tighter leading-[1.1]">
+                            Act2Goal :
+                        </h1>
+                        <h2 className="sans-font text-xl md:text-3xl text-textMuted font-light mb-4 max-w-5xl mx-auto leading-normal">
+                            From World Model To General Goal-conditioned Policy                        
+                        </h2>
+                        
+                        <div className="sans-font mb-10">
+                            <div className="font-medium text-lg text-textMain">AgiBot Team</div>
+                            <div className="text-textMuted text-sm mt-1">AgiBot Research</div>
+                        </div>
+
+                        <div className="flex justify-center gap-4 flex-wrap mt-8">
+                            <Button href="/supplementary/LEARNING_ADAPTIVE_INVERSE_DYNAMICS_FOR_VISUO_MOTOR_MANIPULATION.pdf" label="Arxiv" colorName="red" icon={<FileText size={18} />} />
+                        </div>
+                    </header>
+
+                    <div className="max-w-5xl mx-auto px-6 mb-12 mt-12">
+                        <div className="relative bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 group">
+                             <SmartImage src="./figures/fig1.png" alt="Main Teaser Figure" className="w-full h-auto" fallbackText="[Figure 1: Visualization]" caption="System overview of Act2Goal" />
+                        </div>
+                    </div>
+
+                    {/* Videos */}
+                    <section id="Generalization" className="max-w-7xl mx-auto px-6 mb-12 scroll-mt-20">
+                        {/* Generalization 大标题 */}
+                        <div className="mb-10 text-center">
+                            <h2 className="sans-font text-3xl md:text-4xl font-bold text-textMain mb-2">
+                                Generalization
+                            </h2>
+                            <p className="text-textMuted text-base font-light">
+                            Real-world scenarios that are difficult to specify precisely via language and require fine-grained control for successful execution.                             
+                            </p>
+                        </div>
+
+                        {/* 视频展示部分 */}
+                        {/* 第一行：In-Domain */}
+                        <div className="mb-8">
+                            <h4 className="sans-font font-semibold text-lg md:text-xl text-textMain tracking-tight mb-4 pb-2 border-b border-gray-200 text-center">
+                                In-Domain
+                            </h4>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                                {DEMO_ITEMS.generalization?.filter((_, idx) => idx < 3).map((item, idx) => (
+                                    <div key={idx} className="flex flex-col h-full">
+                                        <div className="flex flex-col w-full h-full rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+                                            <div className="relative bg-black">
+                                                <div className="aspect-video">
+                                                    <VideoPlayer src={item.src}>
+                                                        
+                                                    </VideoPlayer>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="p-3 flex flex-col flex-1 min-h-0">
+                                                <h5 className="text-base font-bold text-textMain mb-1 sans-font leading-tight">
+                                                    {item.title}
+                                                </h5>
+                                                <p className="text-sm text-textMuted leading-snug line-clamp-3 flex-1 mb-2">
+                                                    {item.desc}
+                                                </p>
+                                          
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* 第二行：Out of domain */}
+                        <div className="mb-12">
+                            <h4 className="sans-font font-semibold text-lg md:text-xl text-textMain tracking-tight mb-4 pb-2 border-b border-gray-200 text-center">
+                                Out of domain
+                            </h4>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                                {DEMO_ITEMS.generalization?.filter((_, idx) => idx >= 3).map((item, idx) => (
+                                    <div key={idx} className="flex flex-col h-full">
+                                        <div className="flex flex-col w-full h-full rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+                                            <div className="relative bg-black">
+                                                <div className="aspect-video">
+                                                    <VideoPlayer src={item.src}>
+                                                       
+                                                    </VideoPlayer>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="p-3 flex flex-col flex-1 min-h-0">
+                                                <h5 className="text-base font-bold text-textMain mb-1 sans-font leading-tight">
+                                                    {item.title}
+                                                </h5>
+                                                <p className="text-sm text-textMuted leading-snug line-clamp-3 flex-1 mb-2">
+                                                    {item.desc}
+                                                </p>
+                                      
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* 新增：表格部分 - Real-World Tasks */}
+                        <div className="mb-16">
+                            <h4 className="sans-font font-semibold  text-lg md:text-xl text-textMain tracking-tight mb-4 pb-2 border-b border-gray-200 text-center">
+                                Real-World Tasks Results
+                            </h4>
+                            
+                       <div className="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
+                            <table className="academic-table min-w-[800px]">
+                                <thead>
+                                    <tr>
+                                    <th></th>
+                                    <th>Model/Task</th>
+                                        <th>Whiteboard Word Writing</th>
+                                        <th>Dessert Plating</th>
+                                        <th>Plug-In Operation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="difficulty-header row-title" rowSpan="4">ID</td>
+                                        <td class="model-cell">DP-GC</td>
+                                        <td>0.00</td>
+                                        <td>0.10</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="model-cell">π<sub>0.5</sub>-GC</td>
+                                        <td>0.23</td>
+                                        <td>0.18</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="model-cell">HyperGoalNet</td>
+                                        <td>0.00</td>
+                                        <td>0.08</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="model-cell highlight">Act2Goal</td>
+                                        <td class="highlight"><strong>0.93</strong></td>
+                                        <td class="highlight"><strong>0.75</strong></td>
+                                        <td class="highlight"><strong>0.46</strong></td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td className="difficulty-header row-title" rowSpan="4">OOD</td>
+                                        <td class="model-cell">DP-GC</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="model-cell">π<sub>0.5</sub>-GC</td>
+                                        <td>0.20</td>
+                                        <td>0.05</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="model-cell">HyperGoalNet</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                        <td>0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="model-cell highlight">Act2Goal</td>
+                                        <td class="highlight"><strong>0.90</strong></td>
+                                        <td class="highlight"><strong>0.48</strong></td>
+                                        <td class="highlight"><strong>0.30</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+
+                        {/* 新增：Simulated Benchmarks */}
+                        <div className="mb-8">
+                                <div className="mb-10 text-center">
+                            <h4 className="sans-font font-semibold  text-lg md:text-xl text-textMain tracking-tight mb-4 pb-2 border-b border-gray-200 text-center">
+                                Simulated Benchmarks
+                            </h4>
+                            <p className="text-textMuted text-base font-light">
+                            Four tasks from the RoboTwin 2.0 benchmark with both easy (no noise) and hard (with noise) environment settings. 
+                            </p>
+                        </div>
+                            
+                            <div className="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
+                                <table className="academic-table min-w-[900px]">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Model/Task</th>
+                                            <th>Move Can</th>
+                                            <th>Pick Bottles</th>
+                                            <th>Place Cup</th>
+                                            <th>Place Shoe</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {/* Easy 任务组 */}
+                                        <tr>
+                                            <td className="difficulty-header row-title" rowSpan="4">Easy</td>
+                                            <td className="model-name">DP-GC</td>
+                                            <td>0.18</td>
+                                            <td>0.04</td>
+                                            <td>0.03</td>
+                                            <td>0.04</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="model-name">π<sub>0.5</sub>-GC</td>
+                                            <td>0.54</td>
+                                            <td>0.13</td>
+                                            <td>0.16</td>
+                                            <td>0.30</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="model-name">HyperGoalNet</td>
+                                            <td>0.11</td>
+                                            <td>0.08</td>
+                                            <td>0.08</td>
+                                            <td>0.01</td>
+                                        </tr>
+                                        <tr >
+                                            <td className="model-name">Act2Goal</td>
+                                            <td className="highlight-cell"><strong>0.62</strong></td>
+                                            <td className="highlight-cell"><strong>0.80</strong></td>
+                                            <td className="highlight-cell"><strong>0.64</strong></td>
+                                            <td className="highlight-cell"><strong>0.52</strong></td>
+                                        </tr>
+                                        
+                                        {/* Hard 任务组 */}
+                                        <tr>
+                                            <td className="difficulty-header row-title" rowSpan="4">Hard</td>
+                                            <td className="model-name">DP-GC</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="model-name">π<sub>0.5</sub>-GC</td>
+                                            <td><strong>0.42</strong></td>
+                                            <td>0.06</td>
+                                            <td>0.04</td>
+                                            <td>0.06</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="model-name">HyperGoalNet</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr >
+                                            <td className="model-name">Act2Goal</td>
+                                            <td>0.13</td>
+                                            <td className="highlight-cell"><strong>0.43</strong></td>
+                                            <td className="highlight-cell"><strong>0.13</strong></td>
+                                            <td className="highlight-cell"><strong>0.15</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div className="section-divider max-w-5xl mx-auto"></div>
+
+                    {/* AER Benchmark Section */}
+                    <section id="self-improvement" className="max-w-7xl mx-auto px-6 mb-12 scroll-mt-20">
+                        {/* 新增：Generalization 大标题 */}
+                        <div className="mb-10 text-center">
+                            <h2 className="sans-font text-3xl md:text-4xl font-bold text-textMain mb-2">
+                                Self-Improvement
+                            </h2>
+                            <p className="text-textMuted text-base font-light">
+                                Rapid improvement of success rate by Online-training.
+                            </p>
+                        </div>
+
+                        {/* 第一行：In-Domain */}
+                        <div className="mb-8">  {/* 减少行间距 */}
+                            {/* 三列网格布局 */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {DEMO_ITEMS.improvement?.filter((_, idx) => idx < 3).map((item, idx) => (
+                                    <div key={idx} className="flex flex-col h-full">
+                                        {/* 视频卡片 - 更紧凑 */}
+                                        <div className="flex flex-col w-full h-full rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-white">
+                                            {/* 视频区域 */}
+                                            <div className="relative bg-black">
+                                                <div className="aspect-video">
+                                                    <VideoPlayer 
+                                                        src={item.src}
+                                                    >
+                                                       
+                                                    </VideoPlayer>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* 文字内容区域 - 大幅减少空白 */}
+                                            <div className="p-3 flex flex-col flex-1 min-h-0">
+                                                {/* 大标题 */}
+                                                <h5 className="text-base font-bold text-textMain mb-1 sans-font leading-tight">
+                                                    {item.title}
+                                                </h5>
+                                                
+                                                {/* 描述文字 - 更紧凑，行距减小 */}
+                                                <p className="text-sm text-textMuted leading-snug line-clamp-3 flex-1 mb-2">
+                                                    {item.desc}
+                                                </p>
+                                                
+                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="mb-12">
+                            <h4 className="sans-font font-semibold  text-lg md:text-xl text-textMain tracking-tight mb-4 pb-2 border-b border-gray-200 text-center">
+                                    Simulated Benchmarks</h4>
+                                     <div className="text-center max-w-4xl mx-auto">
+                                    <p className="text-textMuted text-base font-light">
+                                        Robotwin online-training: The success rates for all four challenging scenarios show steady improvement over three training rounds before stabilizing.
+                                    </p>
+                                    <p className="text-textMuted text-base font-light">
+                                    (A: Move Can Pot, B: Pick Bottles, C: Place Cup, D: Place Shoe).
+                                    </p>
+                                </div>
+                                <div className="flex flex-col md:flex-row gap-6 mb-8 items-stretch">
+                                    <div className="w-full md:w-2/3">
+                                        <figure className="m-0">
+                                            <img 
+                                                src="figures/robotwin_online_train.png" 
+                                                alt="Online training results comparison" 
+                                                className="w-full h-auto block border-0 rounded-lg shadow-sm"
+                                            />
+                                        </figure>
+                                    </div>
+                                    
+                                    <div className="w-full md:w-1/3">
+                                        <div className="relative bg-black rounded-lg overflow-hidden">
+                                            <video 
+                                                autoPlay 
+                                                muted 
+                                                controls 
+                                                className="w-full h-auto"
+                                            >
+                                                <source src="web_videos/OA-OOD sim tasks.mp4" type="video/mp4" />
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+
+                           
+                            </div>
+                    </section>
+
+                    <div className="section-divider max-w-5xl mx-auto"></div>
+
+
+
+                    <section id="msth-ablation" className="max-w-7xl mx-auto px-6 mb-20 scroll-mt-20">
+                             <div className="mb-10 text-center">
+                            <h2 className="sans-font text-3xl md:text-4xl font-bold text-textMain mb-2">
+                                Ablation Study for Multi-Scale Temporal Hashing
+                            </h2>
+                            <p className="text-textMuted text-base font-light">
+                                The MSTH-based prediction strategy significantly outperforms the widely-used fixed-horizon action chunking approach in goal-conditioned tasks, particularly for long-horizon scenarios.
+                            </p>
+                            
+                            <div className="overflow-x-auto border border-gray-200 rounded-lg shadow-sm mb-12">
+                                <table className="academic-table min-w-[900px]">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Model</th>
+                                            <th>Short</th>
+                                            <th>Medium</th>
+                                            <th>Long</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td className="difficulty-header row-title" rowSpan="2">ID</td>
+                                            <td className="model-name">w/o MSTH</td>
+                                            <td>0.95</td>
+                                            <td>0.35</td>
+                                            <td>0.10</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="model-name">w/ MSTH</td>
+                                            <td className="highlight-cell"><strong>0.95</strong></td>
+                                            <td className="highlight-cell"><strong>0.90</strong></td>
+                                            <td className="highlight-cell"><strong>0.90</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td className="difficulty-header row-title" rowSpan="2">OOD</td>
+                                            <td className="model-name">w/o MSTH</td>
+                                            <td>0.60</td>
+                                            <td>0.20</td>
+                                            <td>0.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="model-name">w/ MSTH</td>
+                                            <td className="highlight-cell"><strong>0.93</strong></td>
+                                            <td className="highlight-cell"><strong>0.90</strong></td>
+                                            <td className="highlight-cell"><strong>0.88</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="mb-12">
+                            <h4 className="sans-font font-semibold  text-lg md:text-xl text-textMain tracking-tight mb-0 pb-2 border-b border-gray-200 text-center">
+                                 Goal-conditioned Video generation via MSTH</h4>
+                            
+                             <p className="text-textMuted text-base font-light">
+                                The video is divided into two parts: a short-horizon proximal segment with densely and uniformly sampled future states for fine-grained dynamics, 
+                                and a long-horizon distal segment with logarithmically spaced samples from the remaining path to the goal, enabling coarser, goal-directed planning.
+                            </p>
+                            </div>
+                            <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+                                <div className="text-center">
+                                    <div className="relative bg-black rounded-lg overflow-hidden mb-2">
+                                        <video 
+                                            autoPlay 
+                                            muted 
+                                            controls 
+                                            preload="metadata"
+                                            className="w-full h-auto"
+                                        >
+                                            <source src="web_videos/case4.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-center">
+                                    <div className="relative bg-black rounded-lg overflow-hidden mb-2">
+                                        <video 
+                                            autoPlay 
+                                            muted 
+                                            controls 
+                                            preload="metadata"
+                                            className="w-full h-auto"
+                                        >
+                                            <source src="web_videos/case5.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                           
+                        </div>
+                    </section>
+
+
+
+
+                    
+                    <div className="section-divider max-w-5xl mx-auto"></div>
+
+
+                    {/* Footer */}
+                    <footer className="bg-bgLight border-t border-gray-200 py-20 px-6">
+                        <div className="max-w-5xl mx-auto">
+                            <div className="grid md:grid-cols-2 gap-12 mb-12 text-center md:text-left">
+                                <div><h4 className="sans-font font-bold text-textMain mb-4">AgiBot Research</h4><p className="text-sm text-gray-600 leading-relaxed max-w-sm mx-auto md:mx-0">Committed to advancing frontier research in embodied artificial intelligence, enabling robots to truly understand and adapt to complex physical worlds.</p></div>
+                                <div><h4 className="sans-font font-bold text-textMain mb-4 text-xs uppercase tracking-wide">Citation</h4><div className="bg-white p-4 border border-gray-200 rounded text-xs font-mono text-gray-600 overflow-x-auto select-all shadow-sm text-left">{`@article{agibot2025UniFACT,\n  title={UniFACT-VLA: Unified Embodied VLM Reasoning with Robotic Action via Auto-regressive Discretized Pre-training},\n  author={AgiBot Team},\n  journal={arXiv preprint},\n  year={2025}\n}`}</div></div>
+                            </div>
+                            <div className="text-center text-xs text-gray-400 sans-font border-t border-gray-200 pt-8">© 2025 AgiBot Research.</div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
