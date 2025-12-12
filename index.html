@@ -495,7 +495,7 @@
                         </div>
 
                         <div className="flex justify-center gap-4 flex-wrap mt-8">
-                            <Button href="/supplementary/LEARNING_ADAPTIVE_INVERSE_DYNAMICS_FOR_VISUO_MOTOR_MANIPULATION.pdf" label="Arxiv" colorName="red" icon={<FileText size={18} />} />
+                            <Button href="/supplementary/" label="Arxiv" colorName="red" icon={<FileText size={18} />} />
                         </div>
                     </header>
 
@@ -805,7 +805,10 @@
                                     Simulated Benchmarks</h4>
                                      <div className="text-center max-w-4xl mx-auto">
                                     <p className="text-textMuted text-base font-light">
-                                        Robotwin online-training: The success rates for all four challenging scenarios show steady improvement over three training rounds before stabilizing.
+                                        Online-training effectiveness test in the Robotwin Simulator. 
+                                        Figure on the left shows success rates improvement for all four challenging scenarios. 
+                                        Figure in the middle shows success rates improvement for different replay buffer settings.
+                                        Video on the right demonstrates the progress of the robot's movements during online simulation learning.
                                     </p>
                                     <p className="text-textMuted text-base font-light">
                                     (A: Move Can Pot, B: Pick Bottles, C: Place Cup, D: Place Shoe).
@@ -899,9 +902,9 @@
                             <h4 className="sans-font font-semibold  text-lg md:text-xl text-textMain tracking-tight mb-0 pb-2 border-b border-gray-200 text-center">
                                  Goal-conditioned Video generation via MSTH</h4>
                             
-                             <p className="text-textMuted text-base font-light">
-                                The video is divided into two parts: a short-horizon proximal segment with densely and uniformly sampled future states for fine-grained dynamics, 
-                                and a long-horizon distal segment with logarithmically spaced samples from the remaining path to the goal, enabling coarser, goal-directed planning.
+                          <p className="text-textMuted text-base font-light">
+                                The video is divided into two parts: <span style="color: blue;">a short-horizon proximal segment</span> with densely and uniformly sampled future states for fine-grained dynamics, 
+                                and <span style="color: red;">a long-horizon distal segment</span> with logarithmically spaced samples from the remaining path to the goal, enabling coarser, goal-directed planning.
                             </p>
                             </div>
                             <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
