@@ -239,8 +239,8 @@
                 { title: "Plug_In_ID", desc: "Following the goal image's guidance, the robot picks up bearing workpieces and inserts them into small holes one by one.", src: "./web_videos/Plug_ID.mp4", src_fpv: "./web_videos/Plug_ID.mp4" }, 
                 { title: "Write_OOD", desc: "The robot writes words unseen during training on a whiteboard using a marker pen.", src: "./web_videos/WRITE_OOD.mp4", src_fpv: "./web_videos/WRITE_OOD.mp4" }, 
                 { title: "Dessert_OOD", desc: "The robot performs dessert plating with reference to a given goal image, using a plate and dessert types unseen in the training data.", src: "./web_videos/DESSERT_OOD.mp4", src_fpv: "./web_videos/DESSERT_OOD.mp4" }, 
-                { title: "Plug_In_OOD", desc: "The robot completes a plug-in task unseen in training: inserting a cylindrical drink bottle into a cup holder.", src: "./web_videos/Plug_OOD.mp4", src_fpv: "./web_videos/Plug_OOD.mp4" }, ]
-            ,
+                { title: "Plug_In_OOD", desc: "The robot completes a plug-in task unseen in training: inserting a cylindrical drink bottle into a cup holder.", src: "./web_videos/Plug_OOD.mp4", src_fpv: "./web_videos/Plug_OOD.mp4" }, 
+            ],
             improvement : [ 
                 { title: "Drawing Unseen Pattern 1", desc: "The robot learns to draw a cross (unseen pattern in training) through 27-min of online training.", src: "./web_videos/OA-drawing unseen_short.mp4" }, 
                 { title: "Drawing Unseen Pattern 2", desc: "The robot learns to draw a paper clip  (unseen pattern in training) through 20-min of online training.", src: "./web_videos/OA-drawing unseen2.mp4" }, 
@@ -908,6 +908,20 @@
                             </p>
                             </div>
                             <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
+                                <div className="text-center">
+                                    <div className="relative bg-black rounded-lg overflow-hidden mb-2">
+                                        <video 
+                                            autoPlay 
+                                            muted 
+                                            controls 
+                                            preload="metadata"
+                                            className="w-full h-auto"
+                                        >
+                                            <source src="web_videos/case3.mp4" type="video/mp4" />
+                                        </video>
+                                    </div>
+                                </div>
+
                                 <div className="text-center">
                                     <div className="relative bg-black rounded-lg overflow-hidden mb-2">
                                         <video 
