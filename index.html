@@ -499,11 +499,36 @@
                         </div>
                     </header>
 
+                    <div className="max-w-4xl mx-auto px-6 mb-12 mt-12">
+                    <div className="w-full flex justify-center">
+                        <div className="relative bg-black rounded-lg overflow-hidden">
+                            <video 
+                                 
+                                muted 
+                                controls 
+                                className="w-full h-auto"
+                                poster="figures/cover.png"
+                            >
+                                <source src="web_videos/PR_video.mp4" type="video/mp4" />
+                            </video>
+                        </div>
+                    </div>
+                    </div>
+
+
                     <div className="max-w-5xl mx-auto px-6 mb-12 mt-12">
                         <div className="relative bg-white rounded-lg overflow-hidden shadow-xl border border-gray-200 group">
                              <SmartImage src="./figures/fig1.png" alt="Main Teaser Figure" className="w-full h-auto" fallbackText="[Figure 1: Visualization]" caption="System overview of Act2Goal" />
                         </div>
                     </div>
+
+
+
+        
+
+
+
+
 
                     {/* Videos */}
                     <section id="Generalization" className="max-w-7xl mx-auto px-6 mb-12 scroll-mt-20">
@@ -755,7 +780,7 @@
                         {/* 新增：Generalization 大标题 */}
                         <div className="mb-10 text-center">
                             <h2 className="sans-font text-3xl md:text-4xl font-bold text-textMain mb-2">
-                                Self-Improvement
+                                Autonomous Improvement
                             </h2>
                             <p className="text-textMuted text-base font-light">
                                 Rapid improvement of success rate by Online-training.
