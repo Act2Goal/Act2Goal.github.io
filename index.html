@@ -256,20 +256,20 @@
             const [logoError, setLogoError] = useState(false);
 
             return (
-                <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+                <nav className="sticky top-0 z-50 w-full bg-gray-800/70 backdrop-blur-md border-b border-gray-700/50 shadow-sm">
                     <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
                         <div className="flex items-center gap-6 h-full">
-                            <a href="https://www.agibot.com" target="_blank" className="group h-full flex items-center opacity-90 hover:opacity-100 transition-opacity py-1">
+                            <a href="https://www.agibot.com/research/" target="_blank" className="group h-full flex items-center opacity-90 hover:opacity-100 transition-opacity py-1">
                                 {!logoError ? (
                                     <img 
-                                        src="./figures/agibot_logo.png" 
+                                        src="./figures/agibot_research.png" 
                                         alt="AgiBot" 
                                         className="h-9 w-auto object-contain" 
                                         onError={() => setLogoError(true)} 
                                     />
                                 ) : (
                                     <div className="flex items-center gap-1.5 text-textMain h-full">
-                                        <Bot size={28} className="text-black" />
+                                        <Bot size={28} className="text-white font-bold text-textMain hover:text-brand transition-colors ml-2" />
                                         <span className="logo-fallback text-xl">AgiBot</span>
                                     </div>
                                 )}
@@ -277,22 +277,22 @@
                             
                             <div className="h-8 w-px bg-gray-300"></div>
 
-                            <a href="#" className="font-bold text-xl tracking-tight text-textMain hover:text-brand transition-colors">
+                            <a href="#" className="text-white font-bold text-xl tracking-tight text-textMain hover:text-brand transition-colors">
                                 Act2Goal
                             </a>
                         </div>
 
                         <div className="flex items-center gap-1 md:gap-8">
                             <div className="hidden md:flex items-center gap-8">
-                                <a href="#Generalization" className="nav-link">Generalization</a>
-                                <a href="#Autonomous improvement" className="nav-link">Autonomous improvement</a>
-                                <a href="#Ablation study" className="nav-link">Ablation study </a>
+                                <a href="#Generalization" className="text-white text-textMain hover:text-brand transition-colors ml-2">Generalization</a>
+                                <a href="#Autonomous improvement" className="text-white text-textMain hover:text-brand transition-colors ml-2">Autonomous improvement</a>
+                                <a href="#Ablation study" className="text-white text-textMain hover:text-brand transition-colors ml-2">Ablation study </a>
                             </div>
                             
                             <a 
                                 href="https://www.agibot.com/research/" 
                                 target="_blank" 
-                                className="nav-link font-bold text-textMain hover:text-brand transition-colors ml-2"
+                                className="text-white font-bold text-textMain hover:text-brand transition-colors ml-2"
                             >
                                 About Us
                             </a>
@@ -489,13 +489,22 @@
                             From World Model To General Goal-conditioned Policy                        
                         </h2>
                         
-                        <div className="sans-font mb-10">
-                            <div className="font-medium text-lg text-textMain">AgiBot Team</div>
-                            <div className="text-textMuted text-sm mt-1">AgiBot Research</div>
-                        </div>
+                          <div className="sans-font mb-10">
+                                    <div className="text-textMain text-center">
+                                        <div className="font-medium text-lg">
+                                            Pengfei Zhou<sup>1*</sup>, Liliang Chen<sup>1*</sup>, Shengcong Chen<sup>1</sup>, Di Chen<sup>1</sup>,
+                                        </div>
+                                        <div className="font-medium text-lg">
+                                            Wenzhi Zhao<sup>1</sup>, Rongjun Jin<sup>1</sup>, Guanghui Ren<sup>1</sup>, Jianlan Luo<sup>1†</sup>
+                                        </div>
+                                    </div>
+                                    <div className="text-textMuted text-sm mt-1 text-center"><sup>1</sup> Agibot Research</div>
+        
+                                    
+                            </div>
 
                         <div className="flex justify-center gap-4 flex-wrap mt-8">
-                            <Button href="/supplementary/" label="Arxiv" colorName="red" icon={<FileText size={18} />} />
+                            <Button href="http://arxiv.org/abs/2512.23541" label="Arxiv" colorName="red" icon={<FileText size={18} />} />
                         </div>
                     </header>
 
@@ -984,7 +993,15 @@
                         <div className="max-w-5xl mx-auto">
                             <div className="grid md:grid-cols-2 gap-12 mb-12 text-center md:text-left">
                                 <div><h4 className="sans-font font-bold text-textMain mb-4">AgiBot Research</h4><p className="text-sm text-gray-600 leading-relaxed max-w-sm mx-auto md:mx-0">Committed to advancing frontier research in embodied artificial intelligence, enabling robots to truly understand and adapt to complex physical worlds.</p></div>
-                                <div><h4 className="sans-font font-bold text-textMain mb-4 text-xs uppercase tracking-wide">Citation</h4><div className="bg-white p-4 border border-gray-200 rounded text-xs font-mono text-gray-600 overflow-x-auto select-all shadow-sm text-left">{`@article{agibot2025Act2Goal,\n  title={Act2Goal},\n  author={AgiBot Team},\n  journal={arXiv preprint},\n  year={2025}\n}`}</div></div>
+                                <div><h4 className="sans-font font-bold text-textMain mb-4 text-xs uppercase tracking-wide">Citation</h4><div className="bg-white p-4 border border-gray-200 rounded text-xs font-mono text-gray-600 overflow-x-auto select-all shadow-sm text-left">{`@misc{zhou2025act2goalworldmodelgeneral,
+      title={Act2Goal: From World Model To General Goal-conditioned Policy}, 
+      author={Pengfei Zhou and Liliang Chen and Shengcong Chen and Di Chen and Wenzhi Zhao and Rongjun Jin and Guanghui Ren and Jianlan Luo},
+      year={2025},
+      eprint={2512.23541},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2512.23541}, 
+}`}</div></div>
                             </div>
                             <div className="text-center text-xs text-gray-400 sans-font border-t border-gray-200 pt-8">© 2025 AgiBot Research.</div>
                         </div>
